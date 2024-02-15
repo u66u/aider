@@ -552,6 +552,8 @@ def main(argv=None, input=None, output=None, force_git_root=None):
                 }
 
         client = openai.OpenAI(api_key=args.openai_api_key, **kwargs)
+        
+
 
     main_model = models.Model.create(args.model, client)
 
@@ -629,7 +631,6 @@ def main(argv=None, input=None, output=None, force_git_root=None):
             return 1
     else:
         coder.run()
-
 
 if __name__ == "__main__":
     status = main()

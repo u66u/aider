@@ -2,8 +2,9 @@ import os
 import queue
 import tempfile
 import time
-
+import openai
 import numpy as np
+from openai import OpenAI
 
 try:
     import soundfile as sf
@@ -88,17 +89,25 @@ class Voice:
             while not self.q.empty():
                 file.write(self.q.get())
 
+        
+        whisper_client = OpenAI(
+            api_key="zu-b70217d6ca3610fed78ae67469e92b86",
+            base_url="https://zukijourney.xyzbot.net/v1"
+        )
+
         with open(filename, "rb") as fh:
-            transcript = self.client.audio.transcriptions.create(
-                model="whisper-1", file=fh, prompt=history, language=language
+            transcript = whisper_client.audio.transcriptions.create(
+                model="whisper", file=fh, prompt=history, language=language, extra_query={"_": "test"}
             )
+
+        # with open(filename, "rb") as fh:
+        #     transcript = self.client.audio.transcriptions.create(
+        #         model="whisper-1", file=fh, prompt=history, language=language
+        #     )
 
         text = transcript.text
         return text
 
 
 if __name__ == "__main__":
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        raise ValueError("Please set the OPENAI_API_KEY environment variable.")
     print(Voice().record_and_transcribe())
